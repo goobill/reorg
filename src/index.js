@@ -10,6 +10,23 @@ const client = new MongoClient(uri, {
     }
 });
 
+const getData = async (col_name) => {
+    const db = client.db("reorg");
+    const collection = db.collection(col_name);
+
+    // Calculate the datetime for one week ago
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 5);
+
+    // Query to fetch records from the last week, sorted by datetime in descending order
+    const query = { datetime: { $gte: oneWeekAgo } };
+    const options = {
+        sort: { datetime: -1 }, // Sort descending
+    };
+
+    return await collection.find(query, options).toArray();
+}
+
 app.http('metrics', {
     methods: ['GET'],
     authLevel: 'anonymous',
@@ -17,25 +34,17 @@ app.http('metrics', {
         try {
             await client.connect();
             
-            const db = client.db("reorg");
-            const collection = db.collection("metrics");
+            const metrics = getData("metrics")
+            const weather = getData("weather")
+            const response = {
+                "metrics": metrics,
+                "weather": weather
+            }
 
-            // Calculate the datetime for one week ago
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-            // Query to fetch records from the last week, sorted by datetime in descending order
-            const query = { datetime: { $gte: oneWeekAgo } };
-            const options = {
-                sort: { datetime: -1 }, // Sort descending
-            };
-
-            const results = await collection.find(query, options).toArray();
-
-            return { jsonBody: results };
+            return { jsonBody: response };
         } catch (e) {
             context.log.error(`Error: ${e.message}`)
-            return { body: e.message };
+            return { jsonBody: [] };
         } finally {
             // Ensures that the client will close when you finish/error
             await client.close();
