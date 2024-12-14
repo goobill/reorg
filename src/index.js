@@ -17,20 +17,22 @@ app.http('metrics', {
         try {
             await client.connect();
             
-            const db = client.db("reorg");
-            const collection = db.collection("metrics");
+            // const db = client.db("reorg");
+            // const collection = db.collection("metrics");
 
-            // Calculate the datetime for one week ago
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            // // Calculate the datetime for one week ago
+            // const oneWeekAgo = new Date();
+            // oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-            // Query to fetch records from the last week, sorted by datetime in descending order
-            const query = { datetime: { $gte: oneWeekAgo } };
-            const options = {
-                sort: { datetime: -1 }, // Sort descending
-            };
+            // // Query to fetch records from the last week, sorted by datetime in descending order
+            // const query = { datetime: { $gte: oneWeekAgo } };
+            // const options = {
+            //     sort: { datetime: -1 }, // Sort descending
+            // };
 
-            const results = await collection.find(query, options).toArray();
+            // const results = await collection.find(query, options).toArray();
+
+            const results = []
 
             return { jsonBody: results };
         } catch (e) {
