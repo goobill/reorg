@@ -23,7 +23,6 @@ app.http('metrics', {
         try {
             // Connect the client to the server	(optional starting in v4.7)
             await client.connect();
-            context.log("connected")
             
             const db = client.db("reorg");
             const collection = db.collection("metrics");
@@ -40,12 +39,20 @@ app.http('metrics', {
 
             const results = await collection.find(query, options).toArray();
 
-            context.log(results.length)
-
-            return results;
+            context.res = {
+                status: 200,
+                body: JSON.stringify(results)
+            }; 
+        } catch (e) {
+            context.res = {
+                status: 403
+            };
+            context.log.error(`Error: ${e.message}`)
         } finally {
             // Ensures that the client will close when you finish/error
             await client.close();
+            context.done()
         }
+        return
     }
 });
