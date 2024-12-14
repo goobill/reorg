@@ -13,7 +13,7 @@ const client = new MongoClient(uri, {
 });
 
 app.http('metrics', {
-    route: 'metrics',
+    // route: 'metrics',
     methods: ['GET'],
     authLevel: 'anonymous',
     return: output.generic({
@@ -23,6 +23,7 @@ app.http('metrics', {
         try {
             // Connect the client to the server	(optional starting in v4.7)
             await client.connect();
+            context.log("connected")
             
             const db = client.db("reorg");
             const collection = db.collection("metrics");
@@ -38,6 +39,8 @@ app.http('metrics', {
             };
 
             const results = await collection.find(query, options).toArray();
+
+            context.log(results.length)
 
             return results;
         } finally {
