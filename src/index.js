@@ -10,9 +10,6 @@ app.http('metrics', {
     // route: 'metrics',
     methods: ['GET'],
     authLevel: 'anonymous',
-    return: output.generic({
-        type: 'http'
-    }),
     handler: async (request, context) => {
         try {
             // Connect the client to the server	(optional starting in v4.7)
