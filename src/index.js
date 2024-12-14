@@ -34,8 +34,8 @@ app.http('metrics', {
         try {
             await client.connect();
             
-            const metrics = getData("metrics")
-            const weather = getData("weather")
+            const metrics = await getData("metrics")
+            const weather = await getData("weather")
             const response = {
                 "metrics": metrics,
                 "weather": weather
