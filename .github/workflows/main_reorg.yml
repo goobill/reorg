@@ -67,4 +67,11 @@ jobs:
           app-name: 'reorg'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+
+      - name: 'Add CORS'
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az functionapp cors add -g reorg -n reorg --allowed-origins https://*.goobill.com
           

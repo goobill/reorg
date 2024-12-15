@@ -28,21 +28,9 @@ const getData = async (col_name) => {
 }
 
 app.http('metrics', {
-    methods: ['GET', 'OPTIONS'],
+    methods: ['GET'],
     authLevel: 'anonymous',
     handler: async (request, context) => {
-        if (request.method === 'OPTIONS') {
-            context.res = {
-                status: 204,
-                headers: {
-                    "Access-Control-Allow-Origin": "https://reorg.goobill.com",
-                    "Access-Control-Allow-Methods": "GET, OPTIONS",
-                    "Access-Control-Allow-Headers": "Content-Type"
-                }
-            };
-            return;
-        }
-    
         try {
             await client.connect();
             
@@ -53,20 +41,10 @@ app.http('metrics', {
                 "weather": weather
             }
 
-            return { 
-                jsonBody: response,
-                headers: {
-                    "Access-Control-Allow-Origin": "https://reorg.goobill.com",
-                }
-            };
+            return { jsonBody: response };
         } catch (e) {
             context.log.error(`Error: ${e.message}`)
-            return { 
-                jsonBody: [],
-                headers: {
-                    "Access-Control-Allow-Origin": "https://reorg.goobill.com",
-                } 
-            };
+            return { jsonBody: [] };
         } finally {
             // Ensures that the client will close when you finish/error
             await client.close();
