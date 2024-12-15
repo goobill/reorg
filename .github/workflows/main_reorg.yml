@@ -71,5 +71,5 @@ jobs:
       - name: 'Add CORS'
         run: |
           az functionapp cors add -g reorg -n reorg --allowed-origins https://*.goobill.com
-          az functionapp cors add -g reorg -n reorg --allowed-origins https://reorg.azurewebsites.net/
+          az functionapp cors add -g reorg -n reorg --allowed-origins https://reorg.pages.dev/
           
