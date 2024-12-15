@@ -34,20 +34,60 @@ app.http('metrics', {
         try {
             await client.connect();
             
-            const metrics = await getData("metrics")
-            const weather = await getData("weather")
+            const metrics = await getData("metrics");
+            const weather = await getData("weather");
             const response = {
                 "metrics": metrics,
                 "weather": weather
-            }
+            };
 
-            return { jsonBody: response };
+            return {
+                status: 200,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'https://reorg.goobill.com',
+                    'Vary': 'Origin',
+                    'Access-Control-Allow-Credentials': 'true',
+                    'Access-Control-Allow-Methods': 'GET',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                },
+                jsonBody: response
+            };
         } catch (e) {
-            context.log.error(`Error: ${e.message}`)
-            return { jsonBody: [] };
+            context.log.error(`Error: ${e.message}`);
+            return {
+                status: 500,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'https://reorg.goobill.com',
+                    'Vary': 'Origin',
+                    'Access-Control-Allow-Credentials': 'true',
+                    'Access-Control-Allow-Methods': 'GET',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                },
+                jsonBody: { error: e.message }
+            };
         } finally {
             // Ensures that the client will close when you finish/error
             await client.close();
         }
+    }
+});
+
+// CORS preflight handler for OPTIONS requests
+app.http('metricsPreflight', {
+    methods: ['OPTIONS'],
+    authLevel: 'anonymous',
+    handler: async (request, context) => {
+        return {
+            status: 204,
+            headers: {
+                'Access-Control-Allow-Origin': 'https://reorg.goobill.com',
+                'Vary': 'Origin',
+                'Access-Control-Allow-Credentials': 'true',
+                'Access-Control-Allow-Methods': 'GET, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type',
+            }
+        };
     }
 });
