@@ -22,6 +22,7 @@ const getData = async (col_name) => {
     const query = { datetime: { $gte: oneWeekAgo } };
     const options = {
         sort: { datetime: -1 }, // Sort descending
+        projection: { _id: 0, unix: 0 } // Exclude _id and unix fields
     };
 
     return await collection.find(query, options).toArray();
