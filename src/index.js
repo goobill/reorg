@@ -18,15 +18,21 @@ const getData = async (col_name, filters) => {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 5);
 
-    // Query to fetch records from the last week, sorted by datetime in descending order
+    // Start with the base query that filters records from the last week
     const query = { datetime: { $gte: oneWeekAgo } };
+
+    // Apply filters dynamically if provided
+    if (filters && typeof filters === 'object') {
+        Object.keys(filters).forEach(key => {
+            query[key] = filters[key];
+        });
+    }
+
+    // Options for sorting and excluding fields
     const options = {
         sort: { datetime: -1 }, // Sort descending
         projection: { _id: 0, unix: 0 } // Exclude _id and unix fields
     };
-    if (filters) {
-        options["filters"] = filters
-    }
 
     return await collection.find(query, options).toArray();
 }
