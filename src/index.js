@@ -10,7 +10,7 @@ const client = new MongoClient(uri, {
     }
 });
 
-const getData = async (col_name) => {
+const getData = async (col_name, filters) => {
     const db = client.db("reorg");
     const collection = db.collection(col_name);
 
@@ -24,6 +24,9 @@ const getData = async (col_name) => {
         sort: { datetime: -1 }, // Sort descending
         projection: { _id: 0, unix: 0 } // Exclude _id and unix fields
     };
+    if (filters) {
+        options["filters"] = filters
+    }
 
     return await collection.find(query, options).toArray();
 }
@@ -37,9 +40,11 @@ app.http('metrics', {
             
             const metrics = await getData("metrics")
             const weather = await getData("weather")
+            const surf = await getData("surf", {"rank": 1})
             const response = {
                 "metrics": metrics,
-                "weather": weather
+                "weather": weather,
+                "surf": surf,
             }
 
             return { jsonBody: response };
