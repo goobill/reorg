@@ -1,0 +1,9 @@
+[Unit]
+Description=Reset Machine
+
+[Timer]
+OnCalendar=*-*-* 08:30:00
+Unit=cleanup.service
+
+[Install]
+WantedBy=timers.target

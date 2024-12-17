@@ -1,17 +1,16 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/azure/functions-action
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy Node.js project to Azure Function App - reorg
 
 on:
   push:
     branches:
       - main
+    paths:
+      - functions
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
-  NODE_VERSION: '20.x' # set this to the node version to use (supports 8.x, 10.x, 12.x)
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'functions' 
+  NODE_VERSION: '20.x'
 
 jobs:
   build:
@@ -45,7 +44,7 @@ jobs:
     needs: build
     
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write
 
     steps:
       - name: Download artifact from build job
@@ -70,7 +69,5 @@ jobs:
 
       - name: 'Add CORS'
         run: |
-          az functionapp cors add -g reorg -n reorg --allowed-origins https://*.goobill.com
-          az functionapp cors add -g reorg -n reorg --allowed-origins https://*.reorg.pages.dev
-          az functionapp cors add -g reorg -n reorg --allowed-origins https://reorg.pages.dev
+          az functionapp cors add -g reorg -n reorg --allowed-origins https://*.goobill.com https://goobill.com https://*.reorg.pages.dev https://reorg.pages.dev
           

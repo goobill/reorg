@@ -1,0 +1,8 @@
+[Unit]
+Description=Reset Machine
+
+[Service]
+Type=simple
+User=kermit
+ExecStart=reboot
+EnvironmentFile=/etc/environment

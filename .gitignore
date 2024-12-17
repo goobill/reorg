@@ -1,2 +1,4 @@
 local.settings.json
-node_modules
+**/.venv/
+**/node_modules/
+**/__pycache__/

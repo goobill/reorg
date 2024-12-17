@@ -1,0 +1,9 @@
+[Unit]
+Description=Record surf forecast
+
+[Timer]
+OnUnitActiveSec=43200s
+OnBootSec=0s
+
+[Install]
+WantedBy=timers.target

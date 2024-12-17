@@ -1,0 +1,27 @@
+name: Deploy Static Website on Cloudflare
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ public ]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Cleanup extra files/folders
+      run: |
+        rm -f public/README.md
+
+    - name: Upload to Cloudflare pages
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        command: pages deploy public --project-name=reorg --branch=main

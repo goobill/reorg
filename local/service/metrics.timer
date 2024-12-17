@@ -1,0 +1,9 @@
+[Unit]
+Description=Record metrics
+
+[Timer]
+OnUnitActiveSec=900s
+OnBootSec=0s
+
+[Install]
+WantedBy=timers.target

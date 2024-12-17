@@ -1,0 +1,8 @@
+[Unit]
+Description=Record metrics
+
+[Service]
+Type=simple
+User=kermit
+ExecStart=/home/kermit/reorg/.venv/bin/python /home/kermit/reorg/src/run_metrics.py || true
+EnvironmentFile=/etc/environment

@@ -1,0 +1,8 @@
+[Unit]
+Description=Record weather
+
+[Service]
+Type=simple
+User=kermit
+ExecStart=/home/kermit/reorg/.venv/bin/python /home/kermit/reorg/src/run_weather.py || true
+EnvironmentFile=/etc/environment

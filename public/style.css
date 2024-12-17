@@ -1,0 +1,53 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: "Arial", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    height: 100vh;
+}
+  
+body {
+    background-color: #1e1e1e;
+    color: white;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    height: 100%;
+}
+
+.container-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    /* align-items: stretch; */
+    flex-wrap: nowrap;
+}
+
+#section-1 {
+    height: 40%;
+}
+
+#section-2 {
+    height: 60%;
+}
+
+#plot_temp {
+    width: 70%;
+}
+
+#plot_indicators {
+    width: 30%;
+}
+
+#plot_heatmap_1 {
+    width: 50%;
+}
+
+#plot_heatmap_2 {
+    width: 50%;
+}

@@ -1,0 +1,8 @@
+[Unit]
+Description=Record surf forecast
+
+[Service]
+Type=simple
+User=kermit
+ExecStart=/home/kermit/reorg/.venv/bin/python /home/kermit/reorg/src/run_surf.py || true
+EnvironmentFile=/etc/environment
