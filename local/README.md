@@ -2,9 +2,7 @@ python3 -m venv .venv
 
 .venv/bin/pip install -r requirements.txt
 
-sudo apt-get install libopenblas-dev
-
-sudo apt-get install libgpiod2
+sudo apt-get install -y libopenblas-dev libgpiod2
 
 scp -r ./local/service user@machine:~
 
