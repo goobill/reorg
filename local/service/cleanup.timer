@@ -1,9 +1,9 @@
 [Unit]
-Description=Reset Machine
+Description=Reset Dashboard
 
 [Timer]
-OnCalendar=*-*-* 08:30:00
-Unit=cleanup.service
+OnCalendar=*-*-* 08:10:00
+Persistent=true
 
 [Install]
 WantedBy=timers.target

@@ -6,6 +6,7 @@ sudo apt-get install libopenblas-dev
 
 sudo apt-get install libgpiod2
 
+scp -r ./local/service user@machine:~
 
 sudo cp -p service/* /etc/systemd/system
 

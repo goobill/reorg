@@ -1,8 +1,10 @@
 [Unit]
-Description=Reset Machine
+Description=Reset Dashboard
+After=network.target
 
 [Service]
-Type=simple
-User=kermit
-ExecStart=reboot
-EnvironmentFile=/etc/environment
+Type=oneshot
+ExecStart=/usr/bin/systemctl reboot
+
+[Install]
+WantedBy=default.target

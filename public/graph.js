@@ -80,14 +80,16 @@ const prepareSurfData = (data) => {
 
   // Step 4: Transform data into the desired format
   const transformData = (data) => {
-    return data.map(item => {
+    return data
+      .map(item => {
         const hour = new Date(item.duration_hours).toISOString().split('T')[1].slice(0, 5); // Extract hour (HH:mm)
         return {
             spot_name: item.spot_name,
             hour: hour,
             weighted_sum: item.weighted_sum
         };
-    }).filter(elem => elem.weighted_sum > 19);
+      })
+      .filter(elem => elem.weighted_sum > 19);
   };
 
   // Output results
