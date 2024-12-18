@@ -2,7 +2,7 @@ python3 -m venv .venv
 
 .venv/bin/pip install -r requirements.txt
 
-sudo apt-get install -y libopenblas-dev libgpiod2
+sudo apt-get install -y libopenblas-dev libgpiod2 vim
 
 scp -r ./local/service user@machine:~
 
@@ -26,3 +26,6 @@ cp -p service/website.service .config/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable website
 systemctl --user start website
+
+
+sudo vim /etc/environment
