@@ -259,8 +259,6 @@ const renderIndicators = async (div_id, indoor, outdoor) => {
     }
   }
 
-  console.log(i_t)
-
   const data = [
     {
       title: { text: "Indoor Temperature" },
@@ -348,8 +346,6 @@ const renderApp = async () => {
     const indoorMetrics = calculateMaxDateMetrics(indoorData, "temperature_c", "humidity", "datetime");
     const outdoorMetrics = calculateMaxDateMetrics(outdoorData, "temperature", "humidity", "datetime");
 
-    console.log(indoorMetrics)
-    
     const dataIndoorTemp = prepareGroupData(indoorData, "temperature_c", "datetime");
     const dataOutsideTemp = prepareGroupData(outdoorData, "temperature", "datetime");
     // const dataOutsideRain = prepareGroupData(outdoorData, "precipitation_probability", "datetime");
