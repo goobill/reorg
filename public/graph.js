@@ -228,7 +228,39 @@ const renderLine = async (div_id, data, yaxis, yaxis2) => {
   Plotly.newPlot(div_id, plotData, layout);
 }
 
-const renderIndicators = async (div_id, i_t, i_t_d, o_t, o_t_d, i_h, i_h_d, o_h, o_h_d) => {
+const renderIndicators = async (div_id, indoor, outdoor) => {
+  let i_t;
+  let i_t_d;
+  let o_t;
+  let o_t_d;
+  let i_h;
+  let i_h_d;
+  let o_h;
+  let o_h_d;
+
+  if (indoor) {
+    if (indoor.averages.today) {
+      i_t = indoor.averages.today.avgTemp
+      i_h = indoor.averages.today.avgHumidity
+    }
+    if (indoor.averages.yesterday) {
+      i_t_d = indoor.averages.yesterday.avgTemp
+      i_h_d = indoor.averages.yesterday.avgHumidity
+    }
+  }
+  if (outdoor) {
+    if (outdoor.averages.today) {
+      o_t = outdoor.averages.today.avgTemp
+      o_h = outdoor.averages.today.avgHumidity
+    }
+    if (outdoor.averages.yesterday) {
+      o_t_d = outdoor.averages.yesterday.avgTemp
+      o_h_d = outdoor.averages.yesterday.avgHumidity
+    }
+  }
+
+  console.log(i_t)
+
   const data = [
     {
       title: { text: "Indoor Temperature" },
@@ -315,10 +347,12 @@ const renderApp = async () => {
 
     const indoorMetrics = calculateMaxDateMetrics(indoorData, "temperature_c", "humidity", "datetime");
     const outdoorMetrics = calculateMaxDateMetrics(outdoorData, "temperature", "humidity", "datetime");
+
+    console.log(indoorMetrics)
     
     const dataIndoorTemp = prepareGroupData(indoorData, "temperature_c", "datetime");
     const dataOutsideTemp = prepareGroupData(outdoorData, "temperature", "datetime");
-    const dataOutsideRain = prepareGroupData(outdoorData, "precipitation_probability", "datetime");
+    // const dataOutsideRain = prepareGroupData(outdoorData, "precipitation_probability", "datetime");
 
     const dataTemp = [
         {
@@ -349,14 +383,8 @@ const renderApp = async () => {
     renderLine("plot_temp", dataTemp, "Temperature °C")
     renderIndicators(
       "plot_indicators",
-      indoorMetrics.averages.today.avgTemp,
-      indoorMetrics.averages.yesterday.avgTemp,
-      outdoorMetrics.averages.today.avgTemp,
-      outdoorMetrics.averages.yesterday.avgTemp,
-      indoorMetrics.averages.today.avgHumidity,
-      indoorMetrics.averages.yesterday.avgHumidity,
-      outdoorMetrics.averages.today.avgHumidity,
-      outdoorMetrics.averages.yesterday.avgHumidity,
+      indoorMetrics,
+      outdoorMetrics
     )
     if (secondDate && secondData.length > 0) {
       renderHeatmap("plot_heatmap_1", secondDate, secondData)
