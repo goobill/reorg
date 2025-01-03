@@ -153,7 +153,7 @@ const renderHeatmap = async (div_id, title, data) => {
         yref: 'y1',
         x: x[j],
         y: y[i],
-        text: z[i][j].toFixed(2),
+        text: z[i][j] > 0 ? z[i][j] : "",
         showarrow: false,
       };
       layout.annotations.push(result);
@@ -334,7 +334,7 @@ const renderIndicators = async (div_id, indoor, outdoor) => {
 
 const renderApp = async () => {
     const url = "https://reorg.azurewebsites.net/api/metrics";
-    const data = await fetchData(url);   
+    const data = await fetchData(url);
 
     if (!data) return; // Exit if data fetching fails
 
