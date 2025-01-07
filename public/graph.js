@@ -122,8 +122,8 @@ const renderHeatmap = async (div_id, title, data) => {
     type: 'heatmap',
     colorscale: [
       [0, 'rgb(50, 50, 50)'],      // Dark grey for low values
-      [0.2, 'rgb(62, 69, 85)'],      // Dark grey for low values
-      [0.3, 'rgb(50, 120, 200)'], // Intermediate blue
+      [0.1, 'rgb(63, 67, 77)'],      // Dark grey for low values
+      [0.2, 'rgb(50, 120, 200)'], // Intermediate blue
       [1, 'rgb(50, 120, 200)'], // Intermediate blue
     ],
     zmin: 0, // Minimum value for scaling

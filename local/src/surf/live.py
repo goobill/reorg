@@ -84,20 +84,24 @@ def extract(id):
 
     wave_info = []  # Assuming this is defined somewhere above your code
 
-    for wave in wave_response["data"]["wave"]: 
+    for wave in wave_response["data"]["wave"]:
         spot_id = id
-        surf = wave["surf"]
-        swells = wave["swells"]
+        surf = wave.get("surf", {})
+        swells = wave.get("swells", [])
         swell_period = -1
 
         # Find the swell with the maximum impact if swells exist
         if swells:
-            max_impact_swell = max(swells, key=lambda swell: swell["impact"])
-            swell_period = max_impact_swell["period"]
+            max_impact_swell = max(swells, key=lambda swell: swell.get("impact", 0))
+            swell_period = max_impact_swell.get("period", -1)
 
-        timestamp = unix_time_convert(wave["timestamp"])
-        min_wave_size = surf["min"]
-        max_wave_size = surf["max"]
+        timestamp = unix_time_convert(wave.get("timestamp", 0))
+
+        # Pull min and max wave sizes from the raw data
+        raw = surf.get("raw", {})
+        min_wave_size = raw.get("min", 0)  # Default to 0 if 'min' key is missing
+        max_wave_size = raw.get("max", 0)  # Default to 0 if 'max' key is missing
+
 
         wave_info_dict = {
             'spot_id': spot_id,
@@ -147,11 +151,11 @@ def extract(id):
             'dusk': dusk
         }
         sun_info.append(sun_info_dict)
-    
+
     wave_df = pd.DataFrame(wave_info)
     wind_df = pd.DataFrame(wind_info)
     sun_df = pd.DataFrame(sun_info)
-    
+
     result_df = pd.merge(wave_df, wind_df, on=["spot_id", "timestamp"], how="left")
     result_df['date'] = result_df["timestamp"].dt.date
     result_df = pd.merge(result_df, sun_df, on=["spot_id", "date"], how="left")
@@ -164,8 +168,8 @@ def process():
         # Parameters
         # DIST_TRAVEL_LIMIT_HRS = 2
         TARGET_DATE = get_next_weekend()
-        MIN_WAVE_SIZE = 2
-        MAX_WAVE_SIZE = 3
+        MIN_WAVE_SIZE = 2.5
+        MAX_WAVE_SIZE = 3.5
         SWELL_PERIOD = 15
         IDEAL_DURATION = 1.25
         MAX_DURATION = 3
@@ -192,9 +196,9 @@ def process():
         else:
             raise RuntimeError(f"Failed to fetch surf spot data: {response.status_code}")
 
-        # Convert to DataFrame
+        # Convert spots to DataFrame
         spots_df = pd.DataFrame(spots)
-        
+
         # Filter to Relevant Subregions
         INTEREST_SUBREGIONS = [
             'Gower', 'North Cornwall', 'North Devon', 'Severn Estuary',
@@ -205,10 +209,18 @@ def process():
 
         # Load Pre-calculated Distances
         distance_data = pd.read_csv(get_distances_path())
-        filtered_spots_df = pd.DataFrame(distance_data)
-        filtered_spots_df['duration_hours'] = round(filtered_spots_df['duration_hours'], 1)
-        
-        filtered_spots_df = filtered_spots_df[filtered_spots_df["duration_hours"] < MAX_DURATION]
+        distance_data['duration_hours'] = round(distance_data['duration_hours'], 1)
+
+        # Filter distances based on MAX_DURATION
+        filtered_distances_df = distance_data[distance_data["duration_hours"] < MAX_DURATION]
+
+        # Merge the DataFrames, keeping all columns from spots_df and only 'duration_hours' from distance_data
+        filtered_spots_df = pd.merge(
+            spots_df,
+            filtered_distances_df[['spot_id', 'duration_hours']],  # Only include 'spot_id' and 'duration_hours'
+            on="spot_id",  # Key for the join
+            how="inner"    # Use 'inner' join to keep only matching rows
+        )
         
         # Fetch Surf Data
         surf_data = pd.DataFrame()
