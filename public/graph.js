@@ -89,7 +89,7 @@ const prepareSurfData = (data) => {
             weighted_sum: item.weighted_sum
         };
       })
-      .filter(elem => elem.weighted_sum > 19);
+      // .filter(elem => elem.weighted_sum > 19);
   };
 
   // Output results

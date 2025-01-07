@@ -294,7 +294,7 @@ def process():
         processed_data['rank'] = processed_data.groupby('date')['weighted_sum'].rank(ascending=False, method='dense')
 
         # Filter the top 3 for each date
-        top = processed_data[processed_data['rank'] == 1]
+        top = processed_data[processed_data['rank'] < 4]
 
         # Sort the final output by date and rank
         top = top.sort_values(by=['date', 'rank']).reset_index(drop=True)
