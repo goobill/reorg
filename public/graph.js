@@ -122,12 +122,12 @@ const renderHeatmap = async (div_id, title, data) => {
     type: 'heatmap',
     colorscale: [
       [0, 'rgb(50, 50, 50)'],      // Dark grey for low values
-      [0.1, 'rgb(63, 67, 77)'],      // Dark grey for low values
-      [0.2, 'rgb(50, 120, 200)'], // Intermediate blue
+      [0.5, 'rgb(63, 67, 77)'],      // Dark grey for low values
+      [0.8, 'rgb(50, 120, 200)'], // Intermediate blue
       [1, 'rgb(50, 120, 200)'], // Intermediate blue
     ],
     zmin: 0, // Minimum value for scaling
-    zmax: 100, // Maximum value for scaling
+    zmax: 200, // Maximum value for scaling
     hoverongaps: false,
     showscale: false
   };
@@ -375,7 +375,7 @@ const renderApp = async () => {
       firstData, 
       secondData
     } = prepareSurfData(data.surf.filter(elem => elem.rank === 1))
-    
+
     renderLine("plot_temp", dataTemp, "Temperature °C")
     renderIndicators(
       "plot_indicators",

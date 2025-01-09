@@ -49,7 +49,7 @@ def get_distances_path():
     return os.path.join(get_data_path(), "dist.csv")
 
 def surf_the_web(id, param_type):
-    sleep_duration = random.uniform(2, 10)
+    sleep_duration = random.uniform(2, 5)
     time.sleep(sleep_duration)
     
     if param_type == "wave":
@@ -67,7 +67,7 @@ def surf_the_web(id, param_type):
         json_object = response.json()
         return json_object
     else:
-        time.sleep(3)
+        time.sleep(random.uniform(10, 20))
         return {
             "wave": [],
             "wind": [],
@@ -290,42 +290,73 @@ def process():
         # Extract the date part
         processed_data['date'] = processed_data['timestamp'].dt.date
 
-        # Rank the rows based on `weighted_sum` within each date partition
-        processed_data['rank'] = processed_data.groupby('date')['weighted_sum'].rank(ascending=False, method='dense')
+        # Aggregate `weighted_sum` by `date` and `spot_name` (location) by summing it
+        aggregated_data = processed_data.groupby(['date', 'spot_name'], as_index=False)['weighted_sum'].sum()
 
-        # Filter the top 3 for each date
-        top = processed_data[processed_data['rank'] < 4]
+        # Rank the spots based on the sum of `weighted_sum` within each date partition
+        aggregated_data['rank'] = aggregated_data.groupby('date')['weighted_sum'].rank(ascending=False, method='dense')
+
+        # Filter the top 3 spots for each date
+        top_3_spots = aggregated_data[aggregated_data['rank'] < 5]
+
+        # Merge with original data to get all columns for the top 3 spots
+
+        extra_info = processed_data[[
+            "date", 
+            "spot_name",
+            'sub_region',
+            'timestamp',
+            'duration_hours',
+            'min_wave_size',
+            'max_wave_size',
+            'swell_period',
+            'wind_speed',
+            'dawn',
+            'sunrise',
+            'sunset',
+            'dusk',
+            'wind_type_Cross-shore',
+            'wind_type_Offshore',
+            'wind_type_Onshore'
+        ]]
+
+        top_3 = pd.merge(top_3_spots, extra_info, on=['date', 'spot_name'], how='left')
 
         # Sort the final output by date and rank
-        top = top.sort_values(by=['date', 'rank']).reset_index(drop=True)
+        top_3 = top_3.sort_values(by=['date', 'rank']).reset_index(drop=True)
 
-        if "wind_type_Offshore" not in top.columns:
-            top['wind_type_Offshore'] = False
-        if "wind_type_Onshore" not in top.columns:
-            top['wind_type_Onshore'] = False
-        if "wind_type_Cross-shore" not in top.columns:
-            top['wind_type_Cross-shore'] = False
+        # Ensure missing wind type columns are added if not present
+        if "wind_type_Offshore" not in top_3.columns:
+            top_3['wind_type_Offshore'] = False
+        if "wind_type_Onshore" not in top_3.columns:
+            top_3['wind_type_Onshore'] = False
+        if "wind_type_Cross-shore" not in top_3.columns:
+            top_3['wind_type_Cross-shore'] = False
 
+        # Final column order
         final_columns = [
-            'spot_name', 
-            'sub_region', 
-            'timestamp', 
-            'duration_hours', 
-            'min_wave_size', 
-            'max_wave_size', 
-            'swell_period', 
-            'wind_speed', 
-            'dawn', 
-            'sunrise', 
-            'sunset', 
-            'dusk', 
-            'wind_type_Cross-shore', 
-            'wind_type_Offshore', 
-            'wind_type_Onshore', 
-            'rank', 
+            'spot_name',
+            'sub_region',
+            'timestamp',
+            'duration_hours',
+            'min_wave_size',
+            'max_wave_size',
+            'swell_period',
+            'wind_speed',
+            'dawn',
+            'sunrise',
+            'sunset',
+            'dusk',
+            'wind_type_Cross-shore',
+            'wind_type_Offshore',
+            'wind_type_Onshore',
+            'rank',
             'weighted_sum'
         ]
 
-        return pd.DataFrame(top[final_columns]).to_numpy()
+        # Ensure that all columns in `final_columns` exist in `top_3` before selecting them
+        top_3 = top_3[final_columns]
+
+        return pd.DataFrame(top_3).to_numpy()
     except Exception as error:
         raise error
