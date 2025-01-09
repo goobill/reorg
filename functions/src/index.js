@@ -46,7 +46,7 @@ app.http('metrics', {
             
             const metrics = await getData("metrics")
             const weather = await getData("weather")
-            const surf = await getData("surf", {"rank": 1})
+            const surf = await getData("surf")
             const response = {
                 "metrics": metrics,
                 "weather": weather,

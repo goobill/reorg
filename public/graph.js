@@ -127,7 +127,7 @@ const renderHeatmap = async (div_id, title, data) => {
       [1, 'rgb(50, 120, 200)'], // Intermediate blue
     ],
     zmin: 0, // Minimum value for scaling
-    zmax: 200, // Maximum value for scaling
+    zmax: 20, // Maximum value for scaling
     hoverongaps: false,
     showscale: false
   };
@@ -153,7 +153,7 @@ const renderHeatmap = async (div_id, title, data) => {
         yref: 'y1',
         x: x[j],
         y: y[i],
-        text: z[i][j] > 0 ? z[i][j] : "",
+        text: z[i][j] > 0 ? z[i][j].toFixed(2) : "",
         showarrow: false,
       };
       layout.annotations.push(result);

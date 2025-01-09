@@ -49,7 +49,7 @@ def get_distances_path():
     return os.path.join(get_data_path(), "dist.csv")
 
 def surf_the_web(id, param_type):
-    sleep_duration = random.uniform(2, 5)
+    sleep_duration = random.uniform(1, 2)
     time.sleep(sleep_duration)
     
     if param_type == "wave":
@@ -296,6 +296,9 @@ def process():
         # Rank the spots based on the sum of `weighted_sum` within each date partition
         aggregated_data['rank'] = aggregated_data.groupby('date')['weighted_sum'].rank(ascending=False, method='dense')
 
+        aggregated_data['total_weighted_sum'] = aggregated_data['weighted_sum']
+        aggregated_data = aggregated_data.drop('weighted_sum', axis=1)
+
         # Filter the top 3 spots for each date
         top_3_spots = aggregated_data[aggregated_data['rank'] < 5]
 
@@ -317,7 +320,8 @@ def process():
             'dusk',
             'wind_type_Cross-shore',
             'wind_type_Offshore',
-            'wind_type_Onshore'
+            'wind_type_Onshore',
+            'weighted_sum'
         ]]
 
         top_3 = pd.merge(top_3_spots, extra_info, on=['date', 'spot_name'], how='left')
@@ -351,11 +355,13 @@ def process():
             'wind_type_Offshore',
             'wind_type_Onshore',
             'rank',
-            'weighted_sum'
+            'weighted_sum',
+            'total_weighted_sum'
         ]
 
         # Ensure that all columns in `final_columns` exist in `top_3` before selecting them
         top_3 = top_3[final_columns]
+
 
         return pd.DataFrame(top_3).to_numpy()
     except Exception as error:
