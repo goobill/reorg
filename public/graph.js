@@ -374,7 +374,7 @@ const renderApp = async () => {
       secondDate,
       firstData, 
       secondData
-    } = prepareSurfData(data.surf.filter(elem => elem.rank === 1))
+    } = prepareSurfData(data.surf.filter(elem => elem.rank < 5))
 
     renderLine("plot_temp", dataTemp, "Temperature °C")
     renderIndicators(
