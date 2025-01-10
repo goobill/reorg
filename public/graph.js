@@ -152,7 +152,7 @@ const renderHeatmap = async (div_id, title, data) => {
         yref: 'y1',
         x: x[j],
         y: y[i],
-        text: z[i][j] > 0 ? z[i][j].toFixed(2) : "",
+        text: z[i][j] > 0 ? Math.round(z[i][j]) : "",
         showarrow: false,
       };
       layout.annotations.push(result);
